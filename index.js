@@ -29,6 +29,30 @@ app.get("/dispositivos/:id", (req, res) => {
     res.json(dispositivo);
 }); // Retorna o dispositivo de id igual ao parâmetro
 
+app.post("/dispositivos", (req, res) => {
+    const { nome, tipo, status, ipAddress } = req.body;
+
+    if(!nome || !tipo || !ipAddress) {
+        return res.status(400).json({ erro: "Campos obrigatórios: nome, tipo, ipAddress" });
+    };
+
+    const novoId = dispositivos.length > 0 
+    ? Math.max(...dispositivos.map((d) => d.id)) + 1
+    : 1;
+
+    const novoDispositivo = {
+        id: novoId,
+        nome: nome,
+        tipo: tipo,
+        status: status || "offline",
+        ipAdress: ipAddress
+    };
+
+    dispositivos.push(novoDispositivo);
+
+    res.status(201).json(novoDispositivo);
+}); // Registra novo dispositivo
+
 app.listen(PORTA, () => {
     console.log(`Servidor rodando em http://localhost:${PORTA}`)
 }); // Permite com que o servidor receba e responda requisições
