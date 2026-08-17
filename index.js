@@ -18,6 +18,17 @@ app.get("/dispositivos", (req, res) => {
     res.json(dispositivos);
 }); // Retorna todos os dispositivos registrados no servidor
 
+app.get("/dispositivos/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const dispositivo = dispositivos.find((d) => d.id === id);
+
+    if (!dispositivo){
+        return res.status(404).json({ erro: "Dispositivo não encontrado" });
+    }
+
+    res.json(dispositivo);
+}); // Retorna o dispositivo de id igual ao parâmetro
+
 app.listen(PORTA, () => {
     console.log(`Servidor rodando em http://localhost:${PORTA}`)
 }); // Permite com que o servidor receba e responda requisições
