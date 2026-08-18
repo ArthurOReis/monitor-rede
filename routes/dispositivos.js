@@ -1,54 +1,22 @@
 import express from "express";
-const router = express.Router();
+import buscarDispositivo from "../middlewares/buscarDispositivo.js";
+import registrarDispositivo from "../middlewares/registrarDispositivo.js";
 import { dispositivos } from "../data/dispositivos.js";
+const router = express.Router();
 
 router.get("/", (req, res) => {
     res.json(dispositivos);
 }); // Retorna todos os dispositivos registrados no servidor
 
-router.get("/:id", (req, res) => {
-    const id = Number(req.params.id);
-    const dispositivo = dispositivos.find((d) => d.id === id);
-
-    if (!dispositivo){
-        return res.status(404).json({ erro: "Dispositivo não encontrado" });
-    }
-
-    res.json(dispositivo);
+router.get("/:id", buscarDispositivo, (req, res) => {
+    res.json(req.dispositivo);
 }); // Retorna o dispositivo de id igual ao parâmetro
 
-router.post("/", (req, res) => {
-    const { nome, tipo, status, ipAddress } = req.body;
-
-    if(!nome || !tipo || !ipAddress) {
-        return res.status(400).json({ erro: "Campos obrigatórios: nome, tipo, ipAddress" });
-    };
-
-    const novoId = dispositivos.length > 0 
-    ? Math.max(...dispositivos.map((d) => d.id)) + 1
-    : 1;
-
-    const novoDispositivo = {
-        id: novoId,
-        nome: nome,
-        tipo: tipo,
-        status: status || "offline",
-        ipAddress: ipAddress
-    };
-
-    dispositivos.push(novoDispositivo);
-
-    res.status(201).json(novoDispositivo);
+router.post("/", registrarDispositivo, (req, res) => {
+    res.status(201).json(req.dispositivo);
 }); // Registra novo dispositivo
 
-router.put("/:id", (req, res) => {
-    const id = Number(req.params.id);
-    const dispositivo = dispositivos.find((d) => d.id === id);
-
-    if (!dispositivo){
-        return res.status(404).json({ erro: "Dispositivo não encontrado" });
-    }
-
+router.put("/:id", buscarDispositivo, (req, res) => {
     const { status } = req.body;
 
     if(!status) {
@@ -59,19 +27,14 @@ router.put("/:id", (req, res) => {
         return res.status(400).json({ erro: "Valor inválido" });
     };
 
-    dispositivo.status = status;
+    req.dispositivo.status = status;
     
-    res.status(200).json(dispositivo);
+    res.status(200).json(req.dispositivo);
 
 }); // Atualiza o status de um dispositivo específico
 
-router.delete("/:id", (req, res) => {
-    const id = Number(req.params.id);
-    const indice = dispositivos.findIndex((d) => d.id === id)
-
-    if (indice === -1){
-        return res.status(404).json({ erro: "Dispositivo não encontrado" });
-    }
+router.delete("/:id", buscarDispositivo, (req, res) => {
+    const indice = dispositivos.findIndex((d) => d.id === req.dispositivo.id)
 
     dispositivos.splice(indice, 1);
 
