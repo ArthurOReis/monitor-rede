@@ -89,6 +89,19 @@ app.put("/dispositivos/:id", (req, res) => {
 
 }); // Atualiza o status de um dispositivo específico
 
+app.delete("/dispositivos/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const indice = dispositivos.findIndex((d) => d.id === id)
+
+    if (indice === -1){
+        return res.status(404).json({ erro: "Dispositivo não encontrado" });
+    }
+
+    dispositivos.splice(indice, 1);
+
+    res.status(200).json({ sistema: "Dispositivo removido com sucesso!" });
+}); // Deleta um dispositivo específico
+
 app.listen(PORTA, () => {
     console.log(`Servidor rodando em http://localhost:${PORTA}`)
 }); // Permite com que o servidor receba e responda requisições
