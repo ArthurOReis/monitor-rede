@@ -5,7 +5,19 @@ import { dispositivos } from "../data/dispositivos.js";
 const router = express.Router();
 
 router.get("/", (req, res) => {
-    res.json(dispositivos);
+    const status = req.query.status;
+    const tipo = req.query.tipo;
+    let resultado = dispositivos;
+
+    if (status && tipo) {
+        resultado = dispositivos.filter((d) => d.status === status && d.tipo === tipo);
+    } else if (status) {
+        resultado = dispositivos.filter((d) => d.status === status);
+    } else if (tipo) {
+        resultado = dispositivos.filter((d) => d.tipo === tipo);
+    }
+
+    res.json(resultado);
 }); // Retorna todos os dispositivos registrados no servidor
 
 router.get("/:id", buscarDispositivo, (req, res) => {
