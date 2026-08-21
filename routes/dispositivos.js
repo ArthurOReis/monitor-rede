@@ -20,6 +20,18 @@ router.get("/", (req, res) => {
     res.json(resultado);
 }); // Retorna todos os dispositivos registrados no servidor
 
+router.get("/resumo", (req, res) => {
+    const quantidadeDispositivos = dispositivos.length;
+    const dispositivosOnline = dispositivos.filter((d) => d.status === "online").length;
+    const dispositivosOffline = dispositivos.filter((d) => d.status === "offline").length;
+
+    res.json({
+        total: quantidadeDispositivos,
+        online: dispositivosOnline,
+        offline: dispositivosOffline,
+    });
+});
+
 router.get("/:id", buscarDispositivo, (req, res) => {
     res.json(req.dispositivo);
 }); // Retorna o dispositivo de id igual ao parâmetro
