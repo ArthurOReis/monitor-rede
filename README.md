@@ -22,7 +22,7 @@ O servidor local opera na porta 3600, `http://localhost:3600`.
 
 ## Rotas e requisições 
 
-| requisição | Rota                  | Descrição                              |
+| Requisição | Rota                  | Descrição                              |
 |--------|------------------------|-----------------------------------------|
 | GET    | `/`                     | Verifica se o servidor está online     |
 | GET    | `/dispositivos`         | Lista todos os dispositivos             |
@@ -83,6 +83,14 @@ Se houver alguma falha ao tentar manipular um dispositivo, será retornado um do
 }
 ```
 
+## Filtros de listagem
+
+a rota `GET /dispositivos` tem a opção de filtrar status e tipos de dispositivos através de query params:
+
+| Parâmetro | Valores aceitos   | Exemplo                    |
+|--------|------------------------|-----------------------------------------|
+| `status`    | `online`, `offline`   | `dispositivos?status=offline`     |
+| `tipo`    | qualqer string          | `dispositivos?tipo=antena`                 |
 
 ## Escopo raíz do monitor de rede
 
